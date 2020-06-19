@@ -1,0 +1,1 @@
+A plugin that changes text to match the layer name. It also resets the layer name so that the text and layer name are in sync (i.e. changing the text will also change the layer name).
