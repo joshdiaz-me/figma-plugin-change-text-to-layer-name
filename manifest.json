@@ -2,5 +2,8 @@
   "name": "Change Text to Layer Name",
   "id": "855655428693813948",
   "api": "1.0.0",
-  "main": "code.js"
+  "main": "code.js",
+  "editorType": [
+    "figma"
+  ]
 }
