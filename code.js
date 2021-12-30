@@ -7,27 +7,28 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-const selection = figma.currentPage.selection;
-let numTextLayers = 0;
-if (selection.length > 0) {
-    selection.forEach((node) => __awaiter(this, void 0, void 0, function* () {
-        if (node.type === 'TEXT') {
-            numTextLayers++;
-            yield figma.loadFontAsync(node.fontName);
-            node.characters = node.name;
-            node.autoRename = true;
-        }
-    }));
-    if (numTextLayers === 0) {
+const changeText = (textNodes) => __awaiter(this, void 0, void 0, function* () {
+    for (const node of textNodes) {
+        yield figma.loadFontAsync(node.fontName);
+        node.characters = node.name;
+        node.autoRename = true;
+    }
+    return Promise.resolve();
+});
+// runtime code
+const run = () => __awaiter(this, void 0, void 0, function* () {
+    const selection = figma.currentPage.selection;
+    const textNodes = selection.filter(node => node.type === 'TEXT');
+    const mixedTextNodes = textNodes.filter(textNode => textNode.fontName.description === 'figma.mixed');
+    if (!selection.length)
+        figma.closePlugin('🚫 Make a selection');
+    if (mixedTextNodes.length > 0)
+        figma.closePlugin('🚫 Text layers cannot contain mixed font styles');
+    if (!textNodes.length) {
         figma.closePlugin('🚫 Select a text layer');
+        return;
     }
-    else if (numTextLayers === 1) {
-        figma.closePlugin('✅ ' + numTextLayers + ' text layer changed');
-    }
-    else {
-        figma.closePlugin('✅ ' + numTextLayers + ' text layers changed');
-    }
-}
-else {
-    figma.closePlugin('🚫 Make a selection');
-}
+    yield changeText(textNodes);
+    figma.closePlugin(`✅ ${textNodes.length} text layer${textNodes.length === 1 ? '' : 's'} changed`);
+});
+run();
