@@ -6,5 +6,9 @@
   "editorType": [
     "figma"
   ],
-  "networkAccess": ["none"]
+  "networkAccess": {
+    "allowedDomains": [
+      "none"
+    ]
+  }
 }
